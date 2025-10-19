@@ -1,0 +1,224 @@
+/* Charity: water Brand Colors & Fonts */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #FFF7E1; /* charity: water BLUE frame */
+    font-family: 'Avenir', 'Proxima Nova', Arial, sans-serif;
+    color: #131313;
+}
+
+.game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+
+.game-wrapper {
+    background-color: #2E9DF7; /* off-white game area */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.score-panel {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 800px;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent dark bar */
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#logo-img {
+    height: 40px;
+}
+
+#game-container {
+    width: 800px;
+    height: 600px;
+    border: 3px solid white;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+#start-btn, #play-again-btn, #win-play-again-btn {
+    padding: 10px 20px;
+    background-color: #FFC907; /* charity: water YELLOW */
+    color: #131313; /* Dark text for yellow button */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+#start-btn:hover, #play-again-btn:hover, #win-play-again-btn:hover {
+    opacity: 0.9;
+}
+
+
+
+.water-drop {
+    position: absolute;
+    width: 55px;   /* Larger size for easier tapping/clicking */
+    height: 55px;
+    
+    /* Use a transparent background so only the image is visible */
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    animation: dropFall 4s linear forwards;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.water-drop:hover {
+    transform: scale(1.1);
+}
+
+/* --- UPDATED RULES TO USE IMAGES --- */
+.drop-light-blue { 
+    background-image: url('img/drop-light-blue.png'); 
+}
+.drop-dark-blue { 
+    background-image: url('img/drop-dark-blue.png'); 
+}
+.drop-brown { 
+    background-image: url('img/drop-brown.png');
+}
+
+
+#cloud-img {
+    position: absolute;
+    top: 5px; /* Position from the top */
+    left: 50%;
+    transform: translateX(-50%); /* Center it horizontally */
+    width: 200px; /* Adjust size if needed */
+    z-index: 1; /* Make sure drops fall from behind it */
+}
+
+#jerry-can-img {
+    position: absolute;
+    bottom: 24px; /* sit just above the bottom inside the white game area */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px; /* slightly larger for better visibility */
+    z-index: 20;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25));
+    pointer-events: none; /* don't block clicks on drops */
+}
+
+#game-over-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: rgba(255, 254, 254, 0.8);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    z-index: 100;
+}
+
+#game-over-screen.hidden {
+    display: none;
+}
+
+#win-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: rgba(255, 254, 254, 0.8);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    z-index: 100;
+}
+
+#win-screen.hidden {
+    display: none;
+}
+
+@keyframes dropFall {
+    from { transform: translateY(-60px); }
+    to { transform: translateY(600px); }
+}
+
+/* This block should ONLY have styles that change for small screens */
+@media (max-width: 850px) {
+    .game-wrapper, .score-panel, #game-container {
+        width: 95vw;
+    }
+    
+    #game-container {
+        height: 70vh;
+    }
+
+    .score-panel {
+        font-size: 0.8em;
+        padding: 5px 10px;
+        flex-wrap: wrap; /* Allow items to wrap on small screens */
+        justify-content: center;
+    }
+  
+}
+
+.color-key {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-family: 'Avenir', 'Proxima Nova', Arial, sans-serif;
+}
+
+.key-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.key-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* Match the colors from your game's drops */
+.key-color.light-blue {
+    background-color: #3f6bed;
+}
+.key-color.dark-blue {
+    background-color: #71d9ff;
+}
+.key-color.bad-drop {
+    background-color: rgb(6, 6, 6); /* The new brown color */
+}
