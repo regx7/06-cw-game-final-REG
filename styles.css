@@ -67,8 +67,15 @@ body {
     font-size: 1.2em;
     font-weight: bold;
 }
-#start-btn:hover, #play-again-btn:hover, #win-play-again-btn:hover, #btn-easy:hover, #btn-normal:hover, #btn-hard:hover {
+#play-again-btn:hover, #win-play-again-btn:hover, #btn-easy:hover, #btn-normal:hover, #btn-hard:hover {
     opacity: 0.9;
+}
+/* Difficulty buttons container */
+.difficulty-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 18px 0;
 }
 
 
@@ -77,6 +84,7 @@ body {
     position: absolute;
     width: 55px;   /* Larger size for easier tapping/clicking */
     height: 55px;
+    padding: 10px; /* Add invisible clickable border for better hitbox */
     
     /* Use a transparent background so only the image is visible */
     background-color: transparent;
@@ -192,7 +200,7 @@ body {
 }
 
 .color-key {
-    display: flex;
+    display: none;
     gap: 20px;
     margin-top: 20px;
     padding: 10px;
@@ -216,15 +224,9 @@ body {
 }
 
 /* Match the colors from your game's drops */
-.key-color.light-blue {
-    background-color: #3f6bed;
-}
-.key-color.dark-blue {
-    background-color: #71d9ff;
-}
-.key-color.bad-drop {
-    background-color: rgb(6, 6, 6); /* The new brown color */
-}
+.key-color.light-blue { background-color: #2fe3ff; }
+.key-color.dark-blue { background-color: #1177ca; }
+.key-color.bad-drop { background-color: #000000; }
 
 /* Footer styling */
 .site-footer {

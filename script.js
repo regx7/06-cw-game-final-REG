@@ -1,152 +1,168 @@
-// Game State Variables
-let score;
-let timer;
-let lives;
-let gameRunning = false;
-let gameInterval;
-let dropInterval;
-
-// DOM Elements
+// --- 1. DOM ELEMENTS ---
 const scoreElement = document.getElementById('score');
 const timerElement = document.getElementById('time');
 const livesElement = document.getElementById('lives');
-const startBtn = document.getElementById('start-btn');
-const gameOverScreen = document.getElementById('game-over-screen');
-const finalScoreElement = document.getElementById('final-score');
+const gameContainer = document.getElementById('game-container');
+const colorKey = document.querySelector('.color-key');
+const difficultyButtons = document.querySelector('.difficulty-buttons');
+
+// Buttons
+const easyBtn = document.getElementById('btn-easy');
+const normalBtn = document.getElementById('btn-normal');
+const hardBtn = document.getElementById('btn-hard');
 const playAgainBtn = document.getElementById('play-again-btn');
 const winPlayAgainBtn = document.getElementById('win-play-again-btn');
-const gameContainer = document.getElementById('game-container');
 
-// Event Listeners
-startBtn.addEventListener('click', startGame);
-playAgainBtn.addEventListener('click', startGame);
-winPlayAgainBtn && winPlayAgainBtn.addEventListener('click', startGame);
+// Screens
+const gameOverScreen = document.getElementById('game-over-screen');
+const winScreen = document.getElementById('win-screen');
+const finalScoreElement = document.getElementById('final-score');
+const winFinalScoreElement = document.getElementById('win-final-score');
 
-// NEW FUNCTION: Clears all drops from the game board
-function clearGameContainer() {
-    // Only remove drop elements — don't clear static UI (like the jerry can)
-    const drops = gameContainer.querySelectorAll('.water-drop');
-    drops.forEach(d => d.remove());
-}
+// Audio
+const clickSound = document.getElementById('audio-click');
+const winSound = document.getElementById('audio-win');
 
-function startGame() {
-    if (gameRunning) {
-        return;
-    }
+// --- 2. GAME STATE VARIABLES ---
+let score, timer, lives;
+let gameRunning = false;
+let gameInterval, dropInterval;
+let currentFallSpeed;
+
+// --- 3. EVENT LISTENERS ---
+easyBtn.addEventListener('click', () => startGame('easy'));
+normalBtn.addEventListener('click', () => startGame('normal'));
+hardBtn.addEventListener('click', () => startGame('hard'));
+
+playAgainBtn.addEventListener('click', showDifficultyButtons);
+winPlayAgainBtn.addEventListener('click', showDifficultyButtons);
+
+// --- 4. GAME LOGIC FUNCTIONS ---
+
+function startGame(difficulty) {
+    if (gameRunning) return;
     gameRunning = true;
-
-    // NEW: Clear any old drops before starting
-    clearGameContainer();
-
-    // 1. Reset game state
+    
     score = 0;
-    timer = 30;
     lives = 3;
 
-    // 2. Update the display
+    // Set difficulty parameters
+    if (difficulty === 'easy') {
+        timer = 45;
+        currentFallSpeed = 5; // 5 second fall
+        dropInterval = setInterval(createDrop, 1500); // Slower spawn
+    } else if (difficulty === 'normal') {
+        timer = 30;
+        currentFallSpeed = 4; // 4 second fall
+        dropInterval = setInterval(createDrop, 1000); // Normal spawn
+    } else { // hard
+        timer = 20;
+        currentFallSpeed = 2.5; // 2.5 second fall
+        dropInterval = setInterval(createDrop, 700); // Faster spawn
+    }
+
+    // Update UI
     scoreElement.textContent = score;
     timerElement.textContent = timer;
     livesElement.textContent = lives;
-    startBtn.style.display = 'none';
-    gameOverScreen.classList.add('hidden');
-    // Hide win screen if it was visible from a previous game
-    const winScreen = document.getElementById('win-screen');
-    if (winScreen) winScreen.classList.add('hidden');
 
-    // 3. Start the game loops
+    colorKey.style.display = 'flex';
+    gameOverScreen.classList.add('hidden');
+    winScreen.classList.add('hidden');
+    difficultyButtons.style.display = 'none';
+
+    // Start game loops
     gameInterval = setInterval(updateTimer, 1000);
-    dropInterval = setInterval(createDrop, 1000);
-    // Ensure the color key is visible when the game starts
-    const colorKey = document.querySelector('.color-key');
-    if (colorKey) colorKey.style.display = 'flex';
 }
 
 function updateTimer() {
     timer--;
     timerElement.textContent = timer;
-
-    if (timer <= 0) {
-        endGame();
-    }
-}
-
-function endGame() {
-    gameRunning = false;
-    clearInterval(gameInterval);
-    clearInterval(dropInterval);
-    
-    // NEW: Clear leftover drops when game ends
-    clearGameContainer();
-
-    finalScoreElement.textContent = score;
-    // If score > 100, show win screen + confetti; otherwise show game over
-    const winScreen = document.getElementById('win-screen');
-    // Hide the color key when the game ends
-    const colorKey = document.querySelector('.color-key');
-    if (colorKey) colorKey.style.display = 'none';
-
-    if (score >= 100 && typeof confetti === 'function' && winScreen) {
-        const winScoreElement = document.getElementById('win-final-score');
-        if (winScoreElement) winScoreElement.textContent = score;
-        winScreen.classList.remove('hidden');
-
-        // Trigger confetti
-        confetti({
-            particleCount: 150,
-            spread: 90,
-            origin: { y: 0.6 }
-        });
-    } else {
-        gameOverScreen.classList.remove('hidden');
-    }
+    if (timer <= 0) endGame();
 }
 
 function createDrop() {
-    if (!gameRunning) return; // Stop creating drops if game has ended
-    
+    if (!gameRunning) return; 
+
     const drop = document.createElement('div');
-    // Set drop type based on desired rarities:
-    // - Dark Blue (good, +5 points): 60%
-    // - Light Blue (good, +10 points): 25%
-    // - Green (bad): 15%
-    const r = Math.random();
-    if (r < 0.60) {
-        drop.className = 'water-drop drop-dark-blue';
-        drop.dataset.type = 'good';
-        drop.dataset.points = 5;
-    } else if (r < 0.60 + 0.25) { // up to 0.85
+    const dropType = Math.random();
+
+    if (dropType < 0.15) { // 15% Bad
+        drop.className = 'water-drop drop-brown';
+        drop.dataset.type = 'bad';
+    } else if (dropType < 0.40) { // 25% Good (10pts)
         drop.className = 'water-drop drop-light-blue';
         drop.dataset.type = 'good';
         drop.dataset.points = 10;
-    } else {
-        drop.className = 'water-drop drop-brown';
-        drop.dataset.type = 'bad';
+    } else { // 60% Good (5pts)
+        drop.className = 'water-drop drop-dark-blue';
+        drop.dataset.type = 'good';
+        drop.dataset.points = 5;
     }
 
     drop.style.left = Math.random() * (gameContainer.offsetWidth - 50) + 'px';
+    drop.style.animationDuration = currentFallSpeed + 's';
     
     drop.addEventListener('click', function() {
         if (drop.dataset.type === 'good') {
             score += parseInt(drop.dataset.points);
             scoreElement.textContent = score;
+            playSound(clickSound); // Play click sound
+            
+            if (score >= 100) endGame();
         } else {
             lives--;
             livesElement.textContent = lives;
-            if (lives <= 0) {
-                endGame();
-            }
+            if (lives <= 0) endGame();
         }
         drop.remove();
     });
 
     gameContainer.appendChild(drop);
     
-    // When the falling animation completes, simply remove the drop.
-    // Do NOT penalize the player here for missed good drops; penalization
-    // only happens on click for bad drops (or wherever else logic applies).
     drop.addEventListener('animationend', function() {
-        if (this.parentNode) {
-            this.remove();
-        }
+        if (this.parentNode) this.remove();
     });
+}
+
+function endGame() {
+    gameRunning = false;
+    clearInterval(gameInterval);
+    clearInterval(dropInterval);
+    clearGameContainer();
+    colorKey.style.display = 'none';
+
+    if (score >= 100) {
+        winFinalScoreElement.textContent = score;
+        winScreen.classList.remove('hidden');
+        playSound(winSound); // Play win sound
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+        }
+    } else {
+        finalScoreElement.textContent = score;
+        gameOverScreen.classList.remove('hidden');
+    }
+}
+
+function showDifficultyButtons() {
+    gameOverScreen.classList.add('hidden');
+    winScreen.classList.add('hidden');
+    difficultyButtons.style.display = 'flex';
+}
+
+function clearGameContainer() {
+    const drops = gameContainer.querySelectorAll('.water-drop');
+    drops.forEach(drop => drop.remove());
+}
+
+// Robust audio play function
+function playSound(audioElement) {
+    if (audioElement) {
+        audioElement.load(); // ADD THIS LINE to hard-reset the audio
+        audioElement.currentTime = 0;
+        audioElement.play().catch(error => {
+            console.error("Audio play failed: ", error);
+        });
+    }
 }

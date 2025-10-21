@@ -10,17 +10,20 @@
     <div class="game-wrapper">
         <div class="score-panel">
     <img src="img/cw_logo-horizontal.png" alt="charity: water logo" id="logo-img">
-    <div class="level">Level: <span id="level">1</span></div>
     <div class="score">Score: <span id="score">0</span></div> <div class="timer">Time: <span id="time">30</span>s</div>
     <div class="lives">Lives: <span id="lives">3</span></div>
-</div>
+        </div>
         
         <div id="game-container">
             <img src="img/water-can-transparent.png" alt="Water Can" id="jerry-can-img">
         </div>
         <img src="img/cloud.png" alt="Cloud" id="cloud-img">
 
-        <button id="start-btn">Start Game</button>
+        <div class="difficulty-buttons">
+            <button id="btn-easy">Easy</button>
+            <button id="btn-normal">Normal</button>
+            <button id="btn-hard">Hard</button>
+        </div>
 
         <div class="color-key">
             <div class="key-item">
@@ -35,7 +38,7 @@
                 <div class="key-color bad-drop"></div>
                 <span>= Lose a Life</span>
             </div>
-            <span class="key-goal">Reach Score Over 100 to Win!</span>
+            <span class="key-goal">Reach 100 to Win!</span>
         </div>
 
         <div id="game-over-screen" class="hidden">
@@ -48,9 +51,13 @@
            <p>Final Score: <span id="win-final-score">0</span></p>
            <button id="win-play-again-btn">Play Again</button>
        </div>
+            <footer class="site-footer">
+                <a href="https://www.charitywater.org/" target="_blank">charity: water main site</a> |
+                <a href="https://www.charitywater.org/donate" target="_blank">Donate</a>
+            </footer>
     </div>
-    
-    
+    <audio id="audio-click" src="audio/drop-click.mp3" preload="auto"></audio>
+    <audio id="audio-win" src="audio/win-sound.mp3" preload="auto"></audio>
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 </body>
